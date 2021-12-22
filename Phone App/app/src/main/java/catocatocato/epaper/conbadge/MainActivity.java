@@ -156,10 +156,8 @@ public class MainActivity extends AppCompatActivity
         //-----------------------------------------------------
         if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            File temp = new File(Environment.getExternalStorageDirectory() .getAbsolutePath()+ "/Android/data/" + getPackageName()
-                    + "/" + System.currentTimeMillis() + ".png");
-            String lastBitmapName;
-            lastBitmapName=temp.getName();
+            File temp = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/Android/data/" + getPackageName()
+                    + "/temp_img.png");
             if (resultCode == RESULT_OK) {
                 Uri contentURI = result.getUri();
                 log.e(" ", " "+contentURI);
@@ -177,7 +175,7 @@ public class MainActivity extends AppCompatActivity
 
                     bmp_raw = Bitmap.createScaledBitmap(bmp_raw, EPaperDisplay.getDisplay().width, EPaperDisplay.getDisplay().height, false);
                     originalImage = bmp_raw;
-                    textLoad.setText(lastBitmapName);
+                    textLoad.setText(contentURI.getLastPathSegment());
                     int pictSize = bmp_raw.getWidth();
                     pictFile.setMaxHeight(pictSize);
                     pictFile.setMinimumHeight(pictSize / 2);

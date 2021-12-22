@@ -15,9 +15,9 @@ public class EPaperPicture{
             {255, 0, 0},
             {255, 255, 0},
             {255, 128, 0},
-            {255, 225, 200} //Peach
+            //{255, 225, 200} //Peach
             //{255, 162, 255} //Lilac
-            //{35, 45, 20} //Dark Green
+            {35, 45, 20} //Dark Green
         };
 
     //---------------------------------------------------------
@@ -135,7 +135,7 @@ public class EPaperPicture{
             double adjBlue = 1;
             double adjYellow = 1;
             double adjOrange = 1.66;
-            double adjLilac = 2;
+            double adjLilac = 3;
             switch (i) {
                 case 0: //black
                     colorDistance = colorDistance * adjBlack;
@@ -161,7 +161,6 @@ public class EPaperPicture{
                 case 7: //Lilac
                     colorDistance = colorDistance * adjLilac;
                     break;
-
             }
 
             if (colorDistance < bestColorDistance) {

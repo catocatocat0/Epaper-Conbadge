@@ -1,9 +1,12 @@
 package catocatocato.epaper.conbadge;
 
 import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity
     public ImageView pictFile; // View of loaded image
     public ImageView pictFilt; // View of filtered image
     Log log ;
+
     // Data
     //-----------------------------
     public static Bitmap originalImage; // Loaded image with original pixel format
@@ -90,6 +94,41 @@ public class MainActivity extends AppCompatActivity
         //-----------------------------
         originalImage = null;
         indTableImage = null;
+
+        // Load the last paired btDevice
+        //-----------------------------
+        SharedPreferences prefs = getSharedPreferences("LAST_BT", MODE_PRIVATE);
+        String btAddress = prefs.getString("BT_NAME", null);
+
+        if(btAddress != null){
+            btDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(btAddress);
+
+            if(btDevice != null){
+                textBlue.setText(btDevice.getName() + " (" + btDevice.getAddress() + ")");
+            }
+        }
+
+        // Load the last selected image
+        //-----------------------------
+        File temp = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/Android/data/" + getPackageName()
+                + "/temp_img.png");
+        File tempFilt = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/Android/data/" + getPackageName()
+                + "/temp_filt.png");
+
+        if(temp.exists() && tempFilt.exists()){
+            originalImage = BitmapFactory.decodeFile(temp.getPath());
+            indTableImage = BitmapFactory.decodeFile(tempFilt.getPath());
+
+            pictFile.setMaxHeight(originalImage.getWidth());
+            pictFile.setMinimumHeight(originalImage.getWidth() / 2);
+            pictFile.setImageBitmap(originalImage);
+
+            pictFilt.setMaxHeight(indTableImage.getWidth());
+            pictFilt.setMinimumHeight(indTableImage.getWidth() / 2);
+            pictFilt.setImageBitmap(indTableImage);
+
+            textLoad.setText("Last Image Loaded.");
+        }
     }
 
     public void onScan(View view)
@@ -148,6 +187,12 @@ public class MainActivity extends AppCompatActivity
                 // Show name and address of the device
                 //---------------------------------------------
                 textBlue.setText(btDevice.getName() + " (" + btDevice.getAddress() + ")");
+
+                // Save the bluetooth device to SharedPrefs
+                //---------------------------------------------
+                SharedPreferences.Editor editor = getSharedPreferences("LAST_BT", MODE_PRIVATE).edit();
+                editor.putString("BT_NAME", btDevice.getAddress());
+                editor.apply();
             }
         }
 
@@ -158,6 +203,8 @@ public class MainActivity extends AppCompatActivity
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             File temp = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/Android/data/" + getPackageName()
                     + "/temp_img.png");
+            File tempFilt = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/Android/data/" + getPackageName()
+                    + "/temp_filt.png");
             if (resultCode == RESULT_OK) {
                 Uri contentURI = result.getUri();
                 log.e(" ", " "+contentURI);
@@ -188,18 +235,20 @@ public class MainActivity extends AppCompatActivity
                     pictFilt.setMaxHeight(size);
                     pictFilt.setMinimumHeight(size / 2);
                     pictFilt.setImageBitmap(indTableImage);
+
+                    // Save processed image to file
+                    fos = new FileOutputStream(tempFilt);
+                    indTableImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-
             }
             else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
 
                 Exception error = result.getError();
                 error.printStackTrace();
             }
-
         }
     }
     public  Bitmap bmp_raw;

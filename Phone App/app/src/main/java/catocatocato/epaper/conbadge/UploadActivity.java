@@ -264,7 +264,7 @@ public class UploadActivity extends AppCompatActivity
         //-----------------------------------------------------
         private boolean u_data()
         {
-            buffInd = 6; // pixels' data offset
+            buffInd = 3; // pixels' data offset
 
             while ((pxInd < array.length) && (buffInd + 1 < BUFF_SIZE))
             {

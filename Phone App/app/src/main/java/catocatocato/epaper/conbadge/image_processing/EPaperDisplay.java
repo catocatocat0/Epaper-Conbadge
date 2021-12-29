@@ -5,7 +5,6 @@ public class EPaperDisplay
     public int    width;
     public int    height;
     public int    index;
-    public String title;
 
     public EPaperDisplay(int width, int height, int index)
     {

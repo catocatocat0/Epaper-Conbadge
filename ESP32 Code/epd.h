@@ -231,7 +231,7 @@ void(*EPD_dispLoad)();     // Pointer on a image data writting function
 void EPD_loadG()
 {
     // Come back to the image data end
-    int pos = 6;
+    int pos = 3;
 
     // Enumerate all of image data bytes
     while (pos < Buff__bufInd)

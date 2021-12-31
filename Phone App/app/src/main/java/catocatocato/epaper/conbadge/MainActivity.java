@@ -53,8 +53,6 @@ public class MainActivity extends AppCompatActivity
     //-----------------------------
     public TextView textBlue;
     public TextView textLoad;
-    public TextView textSend;
-    public Button button_file;
     public ImageView pictFile; // View of loaded image
     public ImageView pictFilt; // View of filtered image
     Log log ;
@@ -86,10 +84,8 @@ public class MainActivity extends AppCompatActivity
         //-----------------------------------------------------
         textBlue = findViewById(R.id.text_blue);
         textLoad = findViewById(R.id.text_file);
-        textSend = findViewById(R.id.text_send);
         pictFile = findViewById(R.id.pict_file);
         pictFilt = findViewById(R.id.pict_filt);
-        button_file = findViewById(R.id.Button_file);
         // Data
         //-----------------------------
         originalImage = null;
@@ -155,10 +151,6 @@ public class MainActivity extends AppCompatActivity
         // Check if any devices is found
         //-----------------------------------------------------
         if (btDevice == null) PermissionHelper.note(this, R.string.no_blue);
-
-        // Check if any palette is selected
-        //-----------------------------------------------------
-        else if (indTableImage == null) PermissionHelper.note(this, R.string.no_filt);
 
         // Open uploading activity
         //-----------------------------------------------------

@@ -1,51 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
-    <LinearLayout
-        style="@style/mchV">
-        <Button
-            style="@style/btn"
-            android:text="@string/scan"
-            android:onClick="onScan"/>
-        <TextView
-            style="@style/txt"
-            android:id="@+id/text_blue"
-            android:text="@string/no_blue"/>
-        <View
-            style="@style/sepL"/>
+    <Button
+        android:id="@+id/button"
+        style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="25dp"
+        android:background="@android:drawable/dialog_holo_light_frame"
+        android:backgroundTint="#03A9F4"
+        android:elevation="10dp"
+        android:onClick="onScan"
+        android:text="@string/scan"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextContrastCheck" />
 
-        <Button
-            style="@style/btn"
-            android:id= "@+id/Button_file"
-            android:text="@string/file"
-            android:onClick="onLoad"/>
-        <TextView
-            style="@style/txt"
-            android:id="@+id/text_file"
-            android:text="@string/no_pict"/>
-        <ImageView
-            style="@style/txt"
-            android:id="@+id/pict_file"
-            android:scaleType="fitCenter"/>
-        <View
-            style="@style/sepL"/>
+    <TextView
+        android:id="@+id/text_blue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/no_blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button" />
 
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:drawable/dialog_holo_light_frame"
+        android:backgroundTint="#03A9F4"
+        android:onClick="onLoad"
+        android:text="@string/file"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_blue" />
 
-        <ImageView
-            style="@style/txt"
-            android:id="@+id/pict_filt" android:scaleType="fitCenter"/>
+    <ImageView
+        android:id="@+id/pict_file"
+        android:layout_width="500px"
+        android:layout_height="500px"
+        android:scaleX="1"
+        android:scaleY="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_file"
+        app:srcCompat="@android:drawable/ic_menu_gallery" />
 
-        <Button
-            style="@style/btn"
-            android:text="@string/upld"
-            android:onClick="onUpload"/>
-        <TextView
-            style="@style/txt"
-            android:id="@+id/text_send"
-            android:text="@string/nothing"/>
-    </LinearLayout>
+    <ImageView
+        android:id="@+id/pict_filt"
+        android:layout_width="500px"
+        android:layout_height="500px"
+        android:scaleX="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_file"
+        app:srcCompat="@android:drawable/ic_menu_gallery" />
 
-</ScrollView>
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:layout_marginBottom="50dp"
+        android:background="@android:drawable/dialog_holo_light_frame"
+        android:backgroundTint="#8BC34A"
+        android:onClick="onUpload"
+        android:text="@string/upld"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/text_file"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/no_pict"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button3" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Selected Image"
+        app:layout_constraintEnd_toEndOf="@+id/pict_file"
+        app:layout_constraintStart_toStartOf="@+id/pict_file"
+        app:layout_constraintTop_toBottomOf="@+id/pict_file" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Conbadge Preview"
+        app:layout_constraintEnd_toEndOf="@+id/pict_filt"
+        app:layout_constraintStart_toStartOf="@+id/pict_filt"
+        app:layout_constraintTop_toBottomOf="@+id/pict_filt" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

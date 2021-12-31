@@ -237,11 +237,17 @@ public class ScanningActivity extends AppCompatActivity implements BluetoothScan
             else viewHolder = (ScanningActivity.ViewHolder) view.getTag();
 
             BluetoothDevice device = btDevices.get(i);
-            String name = device.getName();
-            if (device.getBondState() == BluetoothDevice.BOND_BONDED) name += " (BONDED)";
 
-            viewHolder.text.setText((name != null) && (name.length() > 0) ? name : "unknown");
-            viewHolder.addr.setText(device.getAddress());
+            if(device != null) {
+                String name = device.getName();
+
+                if(name != null) {
+                    if (device.getBondState() == BluetoothDevice.BOND_BONDED) name += " (BONDED)";
+                    viewHolder.text.setText(name.length() > 0 ? name : "unknown");
+                    viewHolder.addr.setText(device.getAddress());
+                }
+            }
+
             return view;
         }
     }
@@ -301,7 +307,7 @@ public class ScanningActivity extends AppCompatActivity implements BluetoothScan
                     //-----------------------------------------
                     if (btListAdapter.contains(device)) break;
 
-                    // Add the device into devices list
+                    // Add the device into devices list if device is named
                     //-----------------------------------------
                     btListAdapter.addDevice(device);
 

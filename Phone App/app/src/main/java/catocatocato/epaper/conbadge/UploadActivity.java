@@ -218,8 +218,11 @@ public class UploadActivity extends AppCompatActivity
         //-----------------------------------------------------
         private boolean u_show()
         {
-            buffInd = 1;           // Size of command in bytes
+            buffInd = 4;           // Size of command in bytes
             buffArr[0] = (byte)255;// Name of command (Show picture)
+            buffArr[1] = (byte)254;// Second Command to mitigate false positives
+            buffArr[2] = (byte)253;// Third Command to mitigate false positives
+            buffArr[3] = (byte)252;// Fourth Command to mitigate false positives
 
             // Return false if the SHOW command is not sent
             //-------------------------------------------------

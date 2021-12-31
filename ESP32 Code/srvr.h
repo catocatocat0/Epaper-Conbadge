@@ -14,35 +14,57 @@
 
 /* Library includes ----------------------------------------------------------*/
 #include "BluetoothSerial.h"
+#define Button 23 // Button on GPIO 22
+
 
 bool Srvr__btIsOn;// It's true when bluetooth is on
 bool Srvr__btConn;// It's true when bluetooth has connected client 
 int  Srvr__msgPos;// Position in buffer from where data is expected
 
 /* Client ---------------------------------------------------------------------*/
-BluetoothSerial Srvr__btClient; // Bluetooth client 
+BluetoothSerial SerialBT; // Bluetooth client 
+boolean confirmRequestPending = false;
 
 /* Avaialble bytes in a stream ------------------------------------------------*/
 int Srvr__available()
 {
-    return Srvr__btIsOn ? Srvr__btClient.available() : false;
+    return Srvr__btIsOn ? SerialBT.available() : false;
 }
 
 void Srvr__write(const char*value)
 {
     // Write data to bluetooth
-    if (Srvr__btIsOn) Srvr__btClient.write((const uint8_t*)value, strlen(value));
+    if (Srvr__btIsOn) SerialBT.write((const uint8_t*)value, strlen(value));
 }
 
 int Srvr__read()
 {
-    return Srvr__btIsOn ? Srvr__btClient.read() : -1;
+    return Srvr__btIsOn ? SerialBT.read() : -1;
 }
 
 void Srvr__flush()
 {
     // Clear Bluetooth's stream
-    if (Srvr__btIsOn) Srvr__btClient.flush();  
+    if (Srvr__btIsOn) SerialBT.flush();  
+}
+
+void BTConfirmRequestCallback(uint32_t numVal)
+{
+  confirmRequestPending = true;
+  Serial.println(numVal);
+}
+
+void BTAuthCompleteCallback(boolean success)
+{
+  confirmRequestPending = false;
+  if (success)
+  {
+    Serial.println("Pairing success!!");
+  }
+  else
+  {
+    Serial.println("Pairing failed, rejected by user!!");
+  }
 }
 
 /* Project includes ----------------------------------------------------------*/
@@ -51,11 +73,16 @@ void Srvr__flush()
 
 bool Srvr__btSetup()                                              
 {
+    //Enable SSP
+    SerialBT.enableSSP();
+    SerialBT.onConfirmRequest(BTConfirmRequestCallback);
+    SerialBT.onAuthComplete(BTAuthCompleteCallback);
+
     // Name shown in bluetooth device list of App part (PC or smartphone)
-    String devName("Katax's Conbadge");
+    String devName("KATAX BADGE");
 
     // Turning on
-    Srvr__btIsOn = Srvr__btClient.begin(devName);
+    Srvr__btIsOn = SerialBT.begin(devName);
 
     // Show the connection result
     if (Srvr__btIsOn) Serial.println("Bluetooth is on");
@@ -66,16 +93,28 @@ bool Srvr__btSetup()
 
     // Return the connection result
     return Srvr__btIsOn;
+
+    //Read button input
+    pinMode(Button, INPUT);
 }
 
 /* The server state observation loop -------------------------------------------*/
 bool Srvr__loop() 
 {
+    // Wait for confirmation of paired device
+      while (confirmRequestPending)
+        {
+            if(digitalRead(Button) == HIGH){
+                SerialBT.confirmReply(true);
+            }
+            delay(10);
+        }
+
     // Bluetooh connection checking
     if (!Srvr__btIsOn) return false;
 
     // Show and update the state if it was changed
-    if (Srvr__btConn != Srvr__btClient.hasClient())
+    if (Srvr__btConn != SerialBT.hasClient())
     {
         Serial.print("Bluetooth status:");
         Serial.println(Srvr__btConn = !Srvr__btConn ? "connected" : "disconnected"); 
@@ -85,7 +124,7 @@ bool Srvr__loop()
     if (!Srvr__btConn) return false; 
 
     // Waiting the client is ready to send data
-    while(!Srvr__btClient.available()) delay(1);
+    while(!SerialBT.available()) delay(1);
 
     // Set buffer's index to zero
     // It means the buffer is empty initially
@@ -143,7 +182,11 @@ bool Srvr__loop()
     }
     
     // Show loaded picture
-    else if (Buff__bufArr[0] == (byte)255)
+    else if (Buff__bufArr[0] == (byte)255 && 
+    Buff__bufArr[1] == (byte)254 &&
+    Buff__bufArr[2] == (byte)253 && 
+    Buff__bufArr[3] == (byte)252 
+    )
     {
         EPD_dispMass[EPD_dispIndex].show();
                 

@@ -12,9 +12,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.RequiresApi;
@@ -41,21 +39,15 @@ public class MainActivity extends AppCompatActivity
 {
     // Request codes
     //-----------------------------
-    public static final int REQ_BLUETOOTH_CONNECTION = 2;
-    public static final int REQ_UPLOADING            = 6;
-
-    // Image file name and path
-    //-----------------------------
-    public static String fileName;
-    public static String filePath;
+    private static final int REQ_BLUETOOTH_CONNECTION = 1;
+    private static final int REQ_UPLOADING            = 2;
 
     // Views
     //-----------------------------
-    public TextView textBlue;
-    public TextView textLoad;
-    public ImageView pictFile; // View of loaded image
-    public ImageView pictFilt; // View of filtered image
-    Log log ;
+    private TextView textBlue;
+    private TextView textLoad;
+    private ImageView pictFile; // View of loaded image
+    private ImageView pictFilt; // View of filtered image
 
     // Data
     //-----------------------------
@@ -66,19 +58,12 @@ public class MainActivity extends AppCompatActivity
     //-----------------------------
     public static BluetoothDevice btDevice;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-
-        // Image file name (null by default)
-        //-----------------------------------------------------
-        fileName = null;
-
-        // Image file path (external storage root by default)
-        //-----------------------------------------------------
-        filePath = Environment.getExternalStorageDirectory().getAbsolutePath();
 
         // Views
         //-----------------------------------------------------
@@ -86,19 +71,23 @@ public class MainActivity extends AppCompatActivity
         textLoad = findViewById(R.id.text_file);
         pictFile = findViewById(R.id.pict_file);
         pictFilt = findViewById(R.id.pict_filt);
+
         // Data
         //-----------------------------
         originalImage = null;
         indTableImage = null;
 
+
+        // Shared Prefs
+        //-----------------------------
+        SharedPreferences prefs = getSharedPreferences("LAST_SAVED", MODE_PRIVATE);
+
         // Load the last paired btDevice
         //-----------------------------
-        SharedPreferences prefs = getSharedPreferences("LAST_BT", MODE_PRIVATE);
         String btAddress = prefs.getString("BT_NAME", null);
 
         if(btAddress != null){
             btDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(btAddress);
-
             if(btDevice != null){
                 textBlue.setText(btDevice.getName() + " (" + btDevice.getAddress() + ")");
             }
@@ -150,7 +139,11 @@ public class MainActivity extends AppCompatActivity
     {
         // Check if any devices is found
         //-----------------------------------------------------
-        if (btDevice == null) PermissionHelper.note(this, R.string.no_blue);
+        if (btDevice == null) PermissionHelper.note(this, "Conbadge not selected.");
+
+        // Check if image is loaded
+        //-----------------------------------------------------
+        if (pictFilt == null) PermissionHelper.note(this, "Image not selected.");
 
         // Open uploading activity
         //-----------------------------------------------------
@@ -159,19 +152,20 @@ public class MainActivity extends AppCompatActivity
             REQ_UPLOADING);
     }
 
+    @Override
     @SuppressLint("SetTextI18n")
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+
         //-----------------------------------------------------
         //  Messages form ScanningActivity
         //-----------------------------------------------------
-        if (requestCode == REQ_BLUETOOTH_CONNECTION)
-        {
+        if (requestCode == REQ_BLUETOOTH_CONNECTION) {
             // Bluetooth device was found and selected
             //-------------------------------------------------
-            if (resultCode == RESULT_OK)
-            {
+            if (resultCode == RESULT_OK) {
                 // Get selected bluetooth device
                 //---------------------------------------------
                 btDevice = data.getParcelableExtra("DEVICE");
@@ -180,9 +174,13 @@ public class MainActivity extends AppCompatActivity
                 //---------------------------------------------
                 textBlue.setText(btDevice.getName() + " (" + btDevice.getAddress() + ")");
 
+                // Pair with the bluetooth device
+                //---------------------------------------------
+                btDevice.createBond();
+
                 // Save the bluetooth device to SharedPrefs
                 //---------------------------------------------
-                SharedPreferences.Editor editor = getSharedPreferences("LAST_BT", MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = getSharedPreferences("LAST_SAVED", MODE_PRIVATE).edit();
                 editor.putString("BT_NAME", btDevice.getAddress());
                 editor.apply();
             }
@@ -191,26 +189,20 @@ public class MainActivity extends AppCompatActivity
         //-----------------------------------------------------
         //  Message from image selection activity
         //-----------------------------------------------------
-        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            File temp = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/Android/data/" + getPackageName()
+            File temp = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + getPackageName()
                     + "/temp_img.png");
-            File tempFilt = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/Android/data/" + getPackageName()
+            File tempFilt = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + getPackageName()
                     + "/temp_filt.png");
             if (resultCode == RESULT_OK) {
                 Uri contentURI = result.getUri();
-                log.e(" ", " "+contentURI);
                 try {
                     bmp_raw = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
                     FileOutputStream fos = new FileOutputStream(temp);
                     bmp_raw.compress(Bitmap.CompressFormat.PNG, 30, fos);
                     fos.flush();
                     fos.close();
-
-                    log.e("getHeight "," "+ bmp_raw.getHeight());
-                    log.e("getWidth "," "+ bmp_raw.getWidth());
-                    log.e("getHeight 1"," "+ EPaperDisplay.getDisplay().width);
-                    log.e("getWidth 1"," "+ EPaperDisplay.getDisplay().height);
 
                     bmp_raw = Bitmap.createScaledBitmap(bmp_raw, EPaperDisplay.getDisplay().width, EPaperDisplay.getDisplay().height, false);
                     originalImage = bmp_raw;
@@ -235,8 +227,7 @@ public class MainActivity extends AppCompatActivity
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
-            else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
 
                 Exception error = result.getError();
                 error.printStackTrace();

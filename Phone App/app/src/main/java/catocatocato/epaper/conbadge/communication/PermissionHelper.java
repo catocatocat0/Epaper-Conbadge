@@ -157,14 +157,14 @@ public class PermissionHelper implements DialogInterface.OnDismissListener
 
     // Notification dialog
     //---------------------------------------------------------
-    public static void note(Activity activity, int msg)
+    public static void note(Activity activity, String msg)
     {
         Resources resources = activity.getResources();
         AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
 
         dialog.setTitle(resources.getString(R.string.dlg_note));
         dialog.setPositiveButton(resources.getString(R.string.btn_okey), null);
-        dialog.setMessage(resources.getString(msg));
+        dialog.setMessage(msg);
         dialog.show();
     }
 }

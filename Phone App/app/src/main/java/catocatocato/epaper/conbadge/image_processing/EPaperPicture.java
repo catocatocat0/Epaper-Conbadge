@@ -6,19 +6,19 @@ import catocatocato.epaper.conbadge.MainActivity;
 
 public class EPaperPicture{
 
-        private static final int[][] palette =
-        {
-            {0, 0, 0},
-            {255, 255, 255},
-            {0, 255, 0},
-            {0, 0, 255},
-            {255, 0, 0},
-            {255, 255, 0},
-            {255, 128, 0},
-            {255, 225, 200} //Peach
-            //{255, 162, 255} //Lilac
-            //{35, 45, 20} //Dark Green
-        };
+    private static final int[][] palette =
+            {
+                    {0, 0, 0},
+                    {255, 255, 255},
+                    {0, 255, 0},
+                    {0, 0, 255},
+                    {255, 0, 0},
+                    {255, 255, 0},
+                    {255, 128, 0},
+                    {255, 225, 200} //Peach
+                    //{255, 162, 255} //Lilac
+                    //{35, 45, 20} //Dark Green
+            };
 
     //---------------------------------------------------------
     //Creates an image using the EPaper screen's color palette

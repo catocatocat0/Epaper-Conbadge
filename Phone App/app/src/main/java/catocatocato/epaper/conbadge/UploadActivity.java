@@ -319,13 +319,6 @@ public class UploadActivity extends AppCompatActivity
                     if (handleUploadingStage()) return;
                 }
 
-                // Exit is the message is unknown
-                //---------------------------------------------
-                else if (!line.contains("Error!")) {
-
-
-                }
-
                 // Otherwise restart the uploading
                 //-----------------------------------------
 

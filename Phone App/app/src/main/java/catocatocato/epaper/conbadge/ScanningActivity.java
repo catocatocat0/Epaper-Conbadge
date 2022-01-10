@@ -225,7 +225,6 @@ public class ScanningActivity extends AppCompatActivity implements BluetoothScan
         public View getView(int i, View view, ViewGroup viewGroup)
         {
             ViewHolder viewHolder;
-
             if (view == null)
             {
                 view = ScanningActivity.this.getLayoutInflater().inflate(R.layout.scanning_list_item, null);
@@ -235,17 +234,18 @@ public class ScanningActivity extends AppCompatActivity implements BluetoothScan
                 view.setTag(viewHolder);
             }
             else viewHolder = (ScanningActivity.ViewHolder) view.getTag();
-
             BluetoothDevice device = btDevices.get(i);
-
             if(device != null) {
                 String name = device.getName();
 
-                if(name != null) {
-                    if (device.getBondState() == BluetoothDevice.BOND_BONDED) name += " (BONDED)";
-                    viewHolder.text.setText(name.length() > 0 ? name : "unknown");
-                    viewHolder.addr.setText(device.getAddress());
+                if(name == null){
+                    name = "unknown";
                 }
+
+                if (device.getBondState() == BluetoothDevice.BOND_BONDED) name += " (BONDED)";
+                viewHolder.text.setText(name);
+
+                viewHolder.addr.setText(device.getAddress());
             }
 
             return view;
@@ -309,6 +309,7 @@ public class ScanningActivity extends AppCompatActivity implements BluetoothScan
 
                     // Add the device into devices list if device is named
                     //-----------------------------------------
+                    if(device.getName() == null) break;
                     btListAdapter.addDevice(device);
 
                     // Update devices list's view

@@ -1,5 +1,6 @@
 package catocatocato.epaper.conbadge;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
@@ -221,6 +222,7 @@ public class ScanningActivity extends AppCompatActivity implements BluetoothScan
             return i;
         }
 
+        @SuppressLint("InflateParams")
         @Override
         public View getView(int i, View view, ViewGroup viewGroup)
         {

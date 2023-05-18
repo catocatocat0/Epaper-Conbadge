@@ -1,0 +1,6 @@
+{
+    "configuration": "FlashFreq=80,UploadSpeed=115200",
+    "board": "esp32:esp32:firebeetle32",
+    "sketch": "Loader_esp32bt.ino",
+    "port": "COM6"
+}

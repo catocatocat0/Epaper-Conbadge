@@ -12,18 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import catocatocato.epaper.conbadge.communication.BluetoothHelper;
 import java.util.Objects;
 
-/**
- * <h1>Upload activity</h1>
- * The activity shows the progress of image uploading into display
- * of the selected bluetooth device.
- *
- * @author  Waveshare team
- * @version 1.0
- * @since   8/20/2018
- *
- * @Modified_By_Katxe
- */
-
 public class UploadActivity extends AppCompatActivity
 {
     private TextView textView;

@@ -69,7 +69,6 @@
         android:id="@+id/button4"
         android:layout_width="0dp"
         android:layout_height="75dp"
-        android:layout_marginBottom="50dp"
         android:background="@android:drawable/dialog_holo_light_frame"
         android:backgroundTint="#8BC34A"
         android:onClick="onUpload"
@@ -92,24 +91,27 @@
         app:layout_constraintTop_toBottomOf="@+id/button3" />
 
     <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Selected Image"
-        app:layout_constraintEnd_toEndOf="@+id/pict_file"
-        app:layout_constraintStart_toStartOf="@+id/pict_file"
-        app:layout_constraintTop_toBottomOf="@+id/pict_file" />
-
-    <TextView
         android:id="@+id/battery_level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Battery Level:"
-        android:textColor="#E91E63"
+        android:textColor="#2196F3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/battery_button" />
+
+    <Button
+        android:id="@+id/battery_button"
+        android:layout_width="80dp"
+        android:layout_height="38dp"
+        android:background="#E91E63"
+        android:onClick="onBatteryButton"
+        android:text="Battery"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/button4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
-        app:layout_constraintVertical_bias="0.479" />
+        app:layout_constraintTop_toBottomOf="@+id/pict_file" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

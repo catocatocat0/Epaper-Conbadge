@@ -3,19 +3,19 @@ package catocatocato.epaper.conbadge;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.RequiresApi;
@@ -42,7 +42,8 @@ public class MainActivity extends AppCompatActivity
     private TextView textBlue;
     private TextView textLoad;
     private ImageView pictFile; // View of loaded image
-    private TextView batteryLevel;
+    public TextView batteryLevel;
+    public Button batteryButton;
 
     // Data
     //-----------------------------
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity
         textLoad = findViewById(R.id.text_file);
         pictFile = findViewById(R.id.pict_file);
         batteryLevel = findViewById(R.id.battery_level);
+        batteryButton = findViewById(R.id.battery_button);
 
         // Data
         //-----------------------------
@@ -112,30 +114,19 @@ public class MainActivity extends AppCompatActivity
                 textLoad.setText("Last Image Loaded.");
             }
         }
-
-        //Update the battery level
-        //-----------------------------
-        if(btDevice != null){
-            //Creates a socket with the conbadge
-            try {
-                btBattery = new BluetoothBattery(btDevice, new BatHandler());
-            }catch (Exception e){
-                PermissionHelper.note(this, "Unable to Read Battery Level");
-            }
-        }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //Update the battery level
-        //-----------------------------
-        if (btDevice != null) {
-            //Creates a socket with the conbadge
-            try {
-                btBattery = new BluetoothBattery(btDevice, new BatHandler());
-            } catch (Exception e) {
-                PermissionHelper.note(this, "Unable to Read Battery Level");
+    class ScanBT implements Runnable{
+        @Override
+        public void run()
+        {
+            if(btDevice != null && btDevice.getBondState() == BluetoothDevice.BOND_BONDED){
+                //Creates a socket with the conbadge
+                try {
+                    btBattery = new BluetoothBattery(btDevice, new BatHandler(), batteryButton);
+                }catch (Exception e){
+                    PermissionHelper.note(MainActivity.this, "Unable to Read Battery Level");
+                }
             }
         }
     }
@@ -153,6 +144,7 @@ public class MainActivity extends AppCompatActivity
             runOnUiThread(new BatteryIndicator(batteryLevel));
         }
     }
+
     private class BatteryIndicator implements Runnable
     {
         public String msg;
@@ -160,6 +152,7 @@ public class MainActivity extends AppCompatActivity
         public BatteryIndicator(String msg)
         {
             this.msg = "Battery: " + msg + " Volts";
+            batteryButton.setBackgroundColor(Color.parseColor("#38d914"));
         }
 
         @Override
@@ -168,7 +161,6 @@ public class MainActivity extends AppCompatActivity
             batteryLevel.setText(msg);
         }
     }
-
 
     public void onScan(View view)
     {
@@ -203,6 +195,12 @@ public class MainActivity extends AppCompatActivity
             }
             startActivityForResult(new Intent(this, UploadActivity.class), REQ_UPLOADING);
         }
+    }
+
+    public void onBatteryButton(View view){
+        //Update the battery level
+        //-----------------------------
+        runOnUiThread(new ScanBT());
     }
 
     @Override

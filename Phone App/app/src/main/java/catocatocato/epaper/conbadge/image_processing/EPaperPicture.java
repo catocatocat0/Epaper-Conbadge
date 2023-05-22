@@ -15,9 +15,9 @@ public class EPaperPicture{
                     {255, 0, 0},
                     {255, 255, 0},
                     {255, 128, 0},
-                    //{255, 225, 200} //Peach
+                    {255, 225, 200} //Peach
                     //{255, 162, 255} //Lilac
-                    {35, 45, 20} //Dark Green
+                    //{35, 45, 20} //Dark Green
             };
 
     //---------------------------------------------------------
@@ -27,18 +27,30 @@ public class EPaperPicture{
         // Bitmap of source image
         Bitmap srcBmp = MainActivity.originalImage;
         // Bitmap of destination image
-        Bitmap dstBmp = srcBmp.copy(srcBmp.getConfig(), true);
+        //Bitmap dstBmp = srcBmp.copy(srcBmp.getConfig(), true);
+        // Grab image as integer array
 
         //applies the dithering algorithm
-        int w = dstBmp.getWidth();
-        int h = dstBmp.getHeight();
+        int w = srcBmp.getWidth();
+        int h = srcBmp.getHeight();
+
+        // Store our image as an array of integers
+        int[] bitMap = new int[w*h];
+
+        // Fills integer array with picture values
+        srcBmp.getPixels(bitMap, 0, w, 0, 0, w, h);
 
         for(int y = 0; y < h; y++){
             for(int x = 0; x < w; x++){
                 //select the current and new RGB
-                int imgRGB = dstBmp.getPixel(x, y);
+                //int imgRGB = dstBmp.getPixel(x, y);
+
+                int imgRGB = bitMap[xyToIndex(x, y, w)];
                 int newRGB = findClosestColor(imgRGB);
-                dstBmp.setPixel(x, y, newRGB);
+
+                //dstBmp.setPixel(x, y, newRGB);
+                bitMap[xyToIndex(x,y,w)] = newRGB;
+
 
                 //converts the hex color values into RGB values
                 int[] imgRGBPalette = separateRGBA(imgRGB);
@@ -51,37 +63,57 @@ public class EPaperPicture{
 
                 //Burke's Dithering
                 if (x + 1 < w){
-                    int update = calculateColor(dstBmp.getPixel(x + 1, y), errR, errG, errB, 8, 32F);
-                    dstBmp.setPixel(x + 1, y, update);
+                    //int update = calculateColor(dstBmp.getPixel(x + 1, y), errR, errG, errB, 8, 32F);
+                    int update = calculateColor(bitMap[xyToIndex(x+1,y,w)], errR, errG, errB, 8, 32F);
+                    //dstBmp.setPixel(x + 1, y, update);
+                    bitMap[xyToIndex(x+1,y,w)] = update;
                 }
                 if (x + 2 < w){
-                    int update = calculateColor(dstBmp.getPixel(x + 2, y), errR, errG, errB, 4, 32F);
-                    dstBmp.setPixel(x + 2, y, update);
+                    //int update = calculateColor(dstBmp.getPixel(x + 2, y), errR, errG, errB, 4, 32F);
+                    int update = calculateColor(bitMap[xyToIndex(x + 2, y,w)], errR, errG, errB, 4, 32F);
+                    //dstBmp.setPixel(x + 2, y, update);
+                    bitMap[xyToIndex(x+2,y,w)] = update;
                 }
                 if (y + 1 < h) {
-                    int update = calculateColor(dstBmp.getPixel(x , y + 1), errR, errG, errB, 8, 32F);
-                    dstBmp.setPixel(x, y + 1, update);
+                    //int update = calculateColor(dstBmp.getPixel(x , y + 1), errR, errG, errB, 8, 32F);
+                    int update = calculateColor(bitMap[xyToIndex(x , y + 1,w)], errR, errG, errB, 8, 32F);
+                    //dstBmp.setPixel(x, y + 1, update);
+                    bitMap[xyToIndex(x,y+1,w)] = update;
                 }
                 if (x - 1 >= 0 && y + 1 < h) {
-                    int update = calculateColor(dstBmp.getPixel(x - 1, y + 1), errR, errG, errB, 4, 32F);
-                    dstBmp.setPixel(x - 1, y + 1, update);
+                    //int update = calculateColor(dstBmp.getPixel(x - 1, y + 1), errR, errG, errB, 4, 32F);
+                    int update = calculateColor(bitMap[xyToIndex(x - 1, y + 1,w)], errR, errG, errB, 4, 32F);
+                    //dstBmp.setPixel(x - 1, y + 1, update);
+                    bitMap[xyToIndex(x-1,y+1,w)] = update;
                 }
                 if (x - 2 >= 0 && y + 1 < h) {
-                    int update = calculateColor(dstBmp.getPixel(x - 2, y + 1), errR, errG, errB, 2, 32F);
-                    dstBmp.setPixel(x - 2, y + 1, update);
+                    //int update = calculateColor(dstBmp.getPixel(x - 2, y + 1), errR, errG, errB, 2, 32F);
+                    int update = calculateColor(bitMap[xyToIndex(x - 2, y + 1,w)], errR, errG, errB, 2, 32F);
+                    //dstBmp.setPixel(x - 2, y + 1, update);
+                    bitMap[xyToIndex(x-2,y+1,w)] = update;
                 }
                 if (y + 1 < h && x + 1 < w) {
-                    int update = calculateColor(dstBmp.getPixel(x + 1, y + 1), errR, errG, errB, 4, 32F);
-                    dstBmp.setPixel(x + 1, y + 1, update);
+                    //int update = calculateColor(dstBmp.getPixel(x + 1, y + 1), errR, errG, errB, 4, 32F);
+                    int update = calculateColor(bitMap[xyToIndex(x + 1, y + 1,w)], errR, errG, errB, 4, 32F);
+                    //dstBmp.setPixel(x + 1, y + 1, update);
+                    bitMap[xyToIndex(x+1,y+1,w)] = update;
                 }
                 if (y + 1 < h && x + 2 < w) {
-                    int update = calculateColor(dstBmp.getPixel(x + 2, y + 1), errR, errG, errB, 2, 32F);
-                    dstBmp.setPixel(x + 2, y + 1, update);
+                    //int update = calculateColor(dstBmp.getPixel(x + 2, y + 1), errR, errG, errB, 2, 32F);
+                    int update = calculateColor(bitMap[xyToIndex(x + 2, y + 1,w)], errR, errG, errB, 2, 32F);
+                    //dstBmp.setPixel(x + 2, y + 1, update);
+                    bitMap[xyToIndex(x+2,y+1,w)] = update;
                 }
             }
         }
 
-        return dstBmp;
+        Bitmap result = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        result.setPixels(bitMap,0,w,0,0,w,h);
+        return result;
+    }
+
+    public static int xyToIndex(int x, int y, int w){
+        return x+w*y;
     }
 
     public static int calculateColor(int selRGB, int errR, int errG, int errB, int dither, float base){

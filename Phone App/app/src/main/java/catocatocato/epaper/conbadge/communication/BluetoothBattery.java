@@ -34,7 +34,7 @@ public class BluetoothBattery {
             btThread.start();
         }
         catch (IOException e) {
-            Log.d("ඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞ",e.toString());
+            Log.d("ඞSOCKETCONNECTඞ",e.toString());
             batteryButton.setBackgroundColor(Color.parseColor("#E91E63"));
         }
     }
@@ -53,7 +53,7 @@ public class BluetoothBattery {
             try {
                 tmpIn = socket.getInputStream();
             } catch (IOException e) {
-                Log.d("ඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞ",e.toString());
+                Log.d("ඞTHREADඞ",e.toString());
                 batteryButton.setBackgroundColor(Color.parseColor("#E91E63"));
             }
 
@@ -73,7 +73,7 @@ public class BluetoothBattery {
                             mmBuffer);
                     readMsg.sendToTarget();
                 } catch (IOException e) {
-                    Log.d("ඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞ",e.toString());
+                    Log.d("ඞSOCKETඞ",e.toString());
                     batteryButton.setBackgroundColor(Color.parseColor("#E91E63"));
                     break;
                 }
@@ -85,7 +85,7 @@ public class BluetoothBattery {
             try {
                 mmSocket.close();
             } catch (IOException e) {
-                Log.d("ඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞ",e.toString());
+                Log.d("ඞCANCELඞ",e.toString());
                 batteryButton.setBackgroundColor(Color.parseColor("#E91E63"));
             }
         }

@@ -107,9 +107,9 @@ public class MainActivity extends AppCompatActivity
                 originalImage = BitmapFactory.decodeFile(temp.getPath());
                 indTableImage = BitmapFactory.decodeFile(tempFilt.getPath());
 
-                pictFile.setMaxHeight(originalImage.getWidth());
-                pictFile.setMinimumHeight(originalImage.getWidth() / 2);
-                pictFile.setImageBitmap(originalImage);
+                pictFile.setMaxHeight(indTableImage.getWidth());
+                pictFile.setMinimumHeight(indTableImage.getWidth() / 2);
+                pictFile.setImageBitmap(indTableImage);
 
                 textLoad.setText("Last Image Loaded.");
             }
@@ -193,6 +193,7 @@ public class MainActivity extends AppCompatActivity
             if(btBattery != null) {
                 btBattery.cancel();
             }
+
             startActivityForResult(new Intent(this, UploadActivity.class), REQ_UPLOADING);
         }
     }
@@ -258,10 +259,6 @@ public class MainActivity extends AppCompatActivity
                     bmp_raw = Bitmap.createScaledBitmap(bmp_raw, EPaperDisplay.getDisplay().width, EPaperDisplay.getDisplay().height, false);
                     originalImage = bmp_raw;
                     textLoad.setText(contentURI.getLastPathSegment());
-                    int pictSize = bmp_raw.getWidth();
-                    pictFile.setMaxHeight(pictSize);
-                    pictFile.setMinimumHeight(pictSize / 2);
-                    pictFile.setImageBitmap(bmp_raw);
 
                     // Image processing
                     //-----------------------------------------------------
@@ -270,6 +267,12 @@ public class MainActivity extends AppCompatActivity
                     // Save processed image to file
                     fos = new FileOutputStream(tempFilt);
                     indTableImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+
+                    //Sets image preview
+                    int pictSize = bmp_raw.getWidth();
+                    pictFile.setMaxHeight(pictSize);
+                    pictFile.setMinimumHeight(pictSize / 2);
+                    pictFile.setImageBitmap(indTableImage);
 
                 } catch (IOException e) {
                     e.printStackTrace();

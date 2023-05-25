@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
@@ -113,7 +114,6 @@ public class UploadActivity extends AppCompatActivity
 
             // Loading pixels into array
             //-------------------------------------------------
-
             for (int y = 0; y < h; y++)
                 for (int x = 0; x < w; x++, i++)
                     array[i] = getColorHex(bmp.getPixel(x, y));
@@ -121,9 +121,12 @@ public class UploadActivity extends AppCompatActivity
             pxInd = 0;
             stInd = 0;
             dSize = 0;
+            prevDSize = 0;
+            prevPxInd = 0;
             buffInd = 2;                             // Size of command in bytes
             buffArr[0] = (byte)'I';                  // Name of command (Initialize)
             buffArr[1] = (byte) 0; // Index of display
+
             return u_send(false);
         }
 
@@ -224,6 +227,7 @@ public class UploadActivity extends AppCompatActivity
         //-----------------------------------------------------
         private boolean u_load()
         {
+
             // Uploading progress message
             //-------------------------------------------------
             String x = "" + (100*pxInd/array.length);
@@ -301,6 +305,7 @@ public class UploadActivity extends AppCompatActivity
                     // Sets the data values to last successful packet
                     prevDSize = dSize;
                     prevPxInd = pxInd;
+
                     // Try to handle received data.
                     // If it's failed, restart the uploading
                     //-----------------------------------------
@@ -309,16 +314,18 @@ public class UploadActivity extends AppCompatActivity
 
                 // Otherwise restart the uploading
                 //-----------------------------------------
-
                 if(!(pxInd == 0 || dSize == 0)) {
+                    Log.d("ඞUploadActivityඞ", "ඞByte was sussy and was voted out!\nඞ\nඞ");
                     dSize = prevDSize;
                     pxInd = prevPxInd;
                     u_load();
                 }else{
                     // Restart the connection if upload failed on first packet
-                    BluetoothHelper.close();
-                    BluetoothHelper.connect();
-                    handler.init(MainActivity.indTableImage);
+                    Log.d("ඞUploadActivityඞ", "ඞFirst byte was sussy!\nඞ\nඞ");
+                    BluetoothHelper.initialize(MainActivity.btDevice, handler = new SocketHandler());
+
+                    // Call the garbage collector since we make a new SocketHandler class
+                    System.gc();
                 }
             }
         }

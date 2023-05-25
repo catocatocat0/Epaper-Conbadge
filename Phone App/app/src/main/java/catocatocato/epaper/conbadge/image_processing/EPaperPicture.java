@@ -43,12 +43,10 @@ public class EPaperPicture{
         for(int y = 0; y < h; y++){
             for(int x = 0; x < w; x++){
                 //select the current and new RGB
-                //int imgRGB = dstBmp.getPixel(x, y);
 
                 int imgRGB = bitMap[xyToIndex(x, y, w)];
                 int newRGB = findClosestColor(imgRGB);
 
-                //dstBmp.setPixel(x, y, newRGB);
                 bitMap[xyToIndex(x,y,w)] = newRGB;
 
 
@@ -63,45 +61,31 @@ public class EPaperPicture{
 
                 //Burke's Dithering
                 if (x + 1 < w){
-                    //int update = calculateColor(dstBmp.getPixel(x + 1, y), errR, errG, errB, 8, 32F);
                     int update = calculateColor(bitMap[xyToIndex(x+1,y,w)], errR, errG, errB, 8, 32F);
-                    //dstBmp.setPixel(x + 1, y, update);
                     bitMap[xyToIndex(x+1,y,w)] = update;
                 }
                 if (x + 2 < w){
-                    //int update = calculateColor(dstBmp.getPixel(x + 2, y), errR, errG, errB, 4, 32F);
                     int update = calculateColor(bitMap[xyToIndex(x + 2, y,w)], errR, errG, errB, 4, 32F);
-                    //dstBmp.setPixel(x + 2, y, update);
                     bitMap[xyToIndex(x+2,y,w)] = update;
                 }
                 if (y + 1 < h) {
-                    //int update = calculateColor(dstBmp.getPixel(x , y + 1), errR, errG, errB, 8, 32F);
                     int update = calculateColor(bitMap[xyToIndex(x , y + 1,w)], errR, errG, errB, 8, 32F);
-                    //dstBmp.setPixel(x, y + 1, update);
                     bitMap[xyToIndex(x,y+1,w)] = update;
                 }
                 if (x - 1 >= 0 && y + 1 < h) {
-                    //int update = calculateColor(dstBmp.getPixel(x - 1, y + 1), errR, errG, errB, 4, 32F);
                     int update = calculateColor(bitMap[xyToIndex(x - 1, y + 1,w)], errR, errG, errB, 4, 32F);
-                    //dstBmp.setPixel(x - 1, y + 1, update);
                     bitMap[xyToIndex(x-1,y+1,w)] = update;
                 }
                 if (x - 2 >= 0 && y + 1 < h) {
-                    //int update = calculateColor(dstBmp.getPixel(x - 2, y + 1), errR, errG, errB, 2, 32F);
                     int update = calculateColor(bitMap[xyToIndex(x - 2, y + 1,w)], errR, errG, errB, 2, 32F);
-                    //dstBmp.setPixel(x - 2, y + 1, update);
                     bitMap[xyToIndex(x-2,y+1,w)] = update;
                 }
                 if (y + 1 < h && x + 1 < w) {
-                    //int update = calculateColor(dstBmp.getPixel(x + 1, y + 1), errR, errG, errB, 4, 32F);
                     int update = calculateColor(bitMap[xyToIndex(x + 1, y + 1,w)], errR, errG, errB, 4, 32F);
-                    //dstBmp.setPixel(x + 1, y + 1, update);
                     bitMap[xyToIndex(x+1,y+1,w)] = update;
                 }
                 if (y + 1 < h && x + 2 < w) {
-                    //int update = calculateColor(dstBmp.getPixel(x + 2, y + 1), errR, errG, errB, 2, 32F);
                     int update = calculateColor(bitMap[xyToIndex(x + 2, y + 1,w)], errR, errG, errB, 2, 32F);
-                    //dstBmp.setPixel(x + 2, y + 1, update);
                     bitMap[xyToIndex(x+2,y+1,w)] = update;
                 }
             }

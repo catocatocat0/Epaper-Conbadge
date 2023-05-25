@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">Conbadge Controller</string>
+    <string name="app_name">Badge Controller</string>
     <string name="bluetooth">bluetooth</string>
 
-    <string name="scan">Select your bluetooth conbadge</string>
+    <string name="scan">Select your bluetooth badge</string>
     <string name="file">Select a picture</string>
-    <string name="upld">Upload to conbadge</string>
+    <string name="upld">Upload to badge</string>
 
     <string name="txt_conn">Connected to:</string>
     <string name="txt_load">Loaded:</string>

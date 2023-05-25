@@ -17,7 +17,7 @@
         android:backgroundTint="#03A9F4"
         android:elevation="10dp"
         android:onClick="onScan"
-        android:text="@string/scan"
+        android:text="Select your badge via Bluetooth"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text="@string/no_blue"
+        android:text="No badge selected"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button" />

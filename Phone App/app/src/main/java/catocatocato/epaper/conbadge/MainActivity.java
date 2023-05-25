@@ -115,22 +115,6 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
-
-    class ScanBT implements Runnable{
-        @Override
-        public void run()
-        {
-            if(btDevice != null && btDevice.getBondState() == BluetoothDevice.BOND_BONDED){
-                //Creates a socket with the conbadge
-                try {
-                    btBattery = new BluetoothBattery(btDevice, new BatHandler(), batteryButton);
-                }catch (Exception e){
-                    PermissionHelper.note(MainActivity.this, "Unable to Read Battery Level");
-                }
-            }
-        }
-    }
-
     //Handle Bluetooth battery messages
     class BatHandler extends Handler
     {
@@ -138,6 +122,7 @@ public class MainActivity extends AppCompatActivity
         {
             super();
         }
+
         public void handleMessage(android.os.Message msg)
         {
             String batteryLevel = new String((byte[]) msg.obj, 0, msg.arg1);
@@ -185,7 +170,7 @@ public class MainActivity extends AppCompatActivity
     {
         // Check if any devices is found
         //-----------------------------------------------------
-        if (btDevice == null) PermissionHelper.note(this, "Conbadge not selected.");
+        if (btDevice == null) PermissionHelper.note(this, "Badge not selected.");
 
         // Open uploading activity
         //-----------------------------------------------------
@@ -201,7 +186,14 @@ public class MainActivity extends AppCompatActivity
     public void onBatteryButton(View view){
         //Update the battery level
         //-----------------------------
-        runOnUiThread(new ScanBT());
+        if(btDevice != null && btDevice.getBondState() == BluetoothDevice.BOND_BONDED){
+            //Creates a socket with the conbadge
+            try {
+                btBattery = new BluetoothBattery(btDevice, new BatHandler(), batteryButton);
+            }catch (Exception e){
+                PermissionHelper.note(MainActivity.this, "Unable to Read Battery Level");
+            }
+        }
     }
 
     @Override
